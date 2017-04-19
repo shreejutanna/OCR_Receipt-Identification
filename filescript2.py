@@ -21,10 +21,10 @@ with open('test_data.csv', newline='') as csvfile:
 
 	# Loads label file, strips off carriage return
 label_lines = [line.rstrip() for line 
-       		in tf.gfile.GFile("WalMart project/training/retrained_labels.txt")]
+       		in tf.gfile.GFile("training/retrained_labels.txt")]
 
 # Unpersists graph from file
-with tf.gfile.FastGFile("WalMart project/training/retrained_graph.pb", 'rb') as f:
+with tf.gfile.FastGFile("training/retrained_graph.pb", 'rb') as f:
 	graph_def = tf.GraphDef()
 	graph_def.ParseFromString(f.read())
 	_ = tf.import_graph_def(graph_def, name='')
@@ -34,6 +34,9 @@ with tf.Session() as sess:
 	softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
 
 
+	with open('results.csv', 'a', newline='') as csvfile:
+		csvwriter = csv.DictWriter(csvfile, fieldnames=["EXT_ID", "WalmartReceipt", "PredictionScore"])
+		csvwriter.writeheader();
 	for image_path in paths :
 
 		# Read in the image_data
@@ -46,10 +49,10 @@ with tf.Session() as sess:
 		print (top_k);
 
 		with open('results.csv', 'a', newline='') as csvfile:
-			csvwriter = csv.writer(csvfile, delimiter=' ',
-				quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			csvwriter = csv.DictWriter(csvfile, fieldnames=["EXT_ID", "WalmartReceipt", "PredictionScore"])
+			
 			if(top_k[0]==1):
-				csvwriter.writerow([image_path[7:-4],'TRUE', str(predictions[0][top_k[0]])])
+				csvwriter.writerow({"EXT_ID":image_path[7:-4],"WalmartReceipt":'TRUE', "PredictionScore":str(predictions[0][top_k[0]])})
 			else:
-				csvwriter.writerow([image_path[7:-4],'FALSE', str(predictions[0][top_k[1]])])
+				csvwriter.writerow({"EXT_ID":image_path[7:-4],"WalmartReceipt":'FALSE', "PredictionScore":str(predictions[0][top_k[1]])})
 			
