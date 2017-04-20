@@ -11,8 +11,8 @@ with open('training_data.csv', newline='') as csvfile:
 		if my_file.is_file():
 			if csvstrings[1]=="WALMART":
 				count+=1;
-				shutil.copy2("images/"+csvstrings[0]+".jpg", "images/isWalMart/"+csvstrings[0]+".jpg")
+				shutil.copy2("images/"+csvstrings[0]+".jpg", "training/training/isWalMart/"+csvstrings[0]+".jpg")
 			else :
-				shutil.copy2("images/"+csvstrings[0]+".jpg", "images/notWalMart/"+csvstrings[0]+".jpg")
+				shutil.copy2("images/"+csvstrings[0]+".jpg", "training/training/notWalMart/"+csvstrings[0]+".jpg")
 
 	print (count);
